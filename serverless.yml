@@ -1,0 +1,24 @@
+service: helloworld-zappts
+
+frameworkVersion: "3"
+
+provider:
+  name: aws
+  runtime: python3.8
+  iamRoleStatements:
+    - Effect: "Allow"
+      Action:
+        - "s3:*"
+      Resource: "arn:aws:s3:::helloworld-zappts/*"
+
+functions:
+  hello:
+    handler: handler.hello
+    events:
+      - s3:
+          bucket: helloworld-zappts
+          event: s3:ObjectCreated:*
+          rules:
+            - prefix: files/
+            - suffix: .txt
+          existing: true
